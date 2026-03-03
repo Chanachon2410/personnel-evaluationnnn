@@ -138,6 +138,12 @@ const TopicsTab = ({ evaluation, onRefresh }) => {
       await api.post(`/admin/evaluations/${evaluation.id}/topics`, { name: newTopicName });
       setNewTopicName('');
       onRefresh();
+      Swal.fire({
+        icon: 'success',
+        title: 'เพิ่มหัวข้อสำเร็จ',
+        showConfirmButton: false,
+        timer: 1500
+      });
     } catch (error) {
       Swal.fire('ผิดพลาด', 'ไม่สามารถเพิ่มหัวข้อได้', 'error');
     }
@@ -146,8 +152,18 @@ const TopicsTab = ({ evaluation, onRefresh }) => {
   const handleDeleteTopic = async (topicId) => {
     const res = await Swal.fire({ title: 'ยืนยันการลบ?', text: 'ตัวชี้วัดทั้งหมดในหัวข้อนี้จะถูกลบออก', icon: 'warning', showCancelButton: true });
     if (res.isConfirmed) {
-      await api.delete(`/admin/topics/${topicId}`);
-      onRefresh();
+      try {
+        await api.delete(`/admin/topics/${topicId}`);
+        onRefresh();
+        Swal.fire({
+          icon: 'success',
+          title: 'ลบหัวข้อสำเร็จ',
+          showConfirmButton: false,
+          timer: 1500
+        });
+      } catch (error) {
+        Swal.fire('ผิดพลาด', 'ไม่สามารถลบหัวข้อได้', 'error');
+      }
     }
   };
 
@@ -186,6 +202,10 @@ const IndicatorTable = ({ topic, onRefresh, evaluation }) => {
   const [isAdding, setIsAdding] = useState(false);
   const [formData, setFormData] = useState({ name: '', type: 'SCALE_1_4', weight: '', requireEvidence: false });
 
+  // editing state
+  const [editingId, setEditingId] = useState(null);
+  const [editData, setEditData] = useState({ name: '', type: 'SCALE_1_4', weight: '', requireEvidence: false });
+
   const handleAdd = async () => {
     if (!formData.name || !formData.weight) {
       return Swal.fire('เตือน', 'กรุณากรอกข้อมูลให้ครบถ้วน', 'warning');
@@ -206,6 +226,52 @@ const IndicatorTable = ({ topic, onRefresh, evaluation }) => {
     } catch (error) {
       Swal.fire('ผิดพลาด', error.response?.data?.message || 'ไม่สามารถเพิ่มตัวชี้วัดได้', 'error');
     }
+  };
+
+  const handleEdit = (ind) => {
+    setEditingId(ind.id);
+    setEditData({
+      name: ind.name,
+      type: ind.type,
+      weight: ind.weight,
+      requireEvidence: ind.requireEvidence,
+    });
+  };
+
+  const handleUpdate = async () => {
+    if (!editData.name || !editData.weight) {
+      return Swal.fire('เตือน', 'กรุณากรอกข้อมูลให้ครบถ้วน', 'warning');
+    }
+    // calculate weight without current indicator
+    let currentTotal = 0;
+    evaluation.topics.forEach(t => t.indicators.forEach(i => {
+      if (i.id !== editingId) currentTotal += i.weight;
+    }));
+    if (currentTotal + parseFloat(editData.weight) > 100) {
+      return Swal.fire('น้ำหนักเกิน!', `น้ำหนักรวมปัจจุบันคือ ${currentTotal}% หากเปลี่ยนเป็น ${editData.weight}% จะเกิน 100%`, 'error');
+    }
+
+    try {
+      // backend uses PATCH for indicators
+      await api.patch(`/admin/indicators/${editingId}`, { ...editData, weight: parseFloat(editData.weight) });
+      setEditingId(null);
+      setEditData({ name: '', type: 'SCALE_1_4', weight: '', requireEvidence: false });
+      onRefresh();
+      Swal.fire({
+        icon: 'success',
+        title: 'แก้ไขข้อมูลสำเร็จ',
+        showConfirmButton: false,
+        timer: 1500
+      });
+    } catch (error) {
+      console.error('update indicator error', error);
+      Swal.fire('ผิดพลาด', error.response?.data?.message || 'ไม่สามารถแก้ไขตัวชี้วัดได้', 'error');
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setEditData({ name: '', type: 'SCALE_1_4', weight: '', requireEvidence: false });
   };
 
   const handleDelete = async (id) => {
@@ -230,28 +296,83 @@ const IndicatorTable = ({ topic, onRefresh, evaluation }) => {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100 text-sm">
-          {topic.indicators.map((ind, idx) => (
-            <tr key={ind.id} className="hover:bg-gray-50/50 transition-colors">
-              <td className="px-6 py-4 font-mono text-gray-400">{idx + 1}</td>
-              <td className="px-6 py-4 font-bold text-gray-900">{ind.name}</td>
-              <td className="px-6 py-4">
-                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase ${
-                  ind.type === 'SCALE_1_4' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'
-                }`}>
-                  {ind.type === 'SCALE_1_4' ? <><Scale size={12}/> ระดับ 1-4</> : <><CheckCircle2 size={12}/> ผ่าน/ไม่ผ่าน</>}
-                </span>
-              </td>
-              <td className="px-6 py-4 text-center font-black text-primary">{ind.weight}%</td>
-              <td className="px-6 py-4 text-center">
-                <span className={`inline-flex items-center gap-1.5 text-xs font-bold ${ind.requireEvidence ? 'text-amber-600' : 'text-gray-300'}`}>
-                  <FileText size={14} /> {ind.requireEvidence ? 'ต้องการ' : 'ไม่ต้องการ'}
-                </span>
-              </td>
-              <td className="px-6 py-4 text-right">
-                <button onClick={() => handleDelete(ind.id)} className="text-gray-300 hover:text-red-600 p-1.5"><Trash2 size={18}/></button>
-              </td>
-            </tr>
-          ))}
+          {topic.indicators.map((ind, idx) => {
+            if (editingId === ind.id) {
+              return (
+                <tr key={ind.id} className="bg-pink-50/30">
+                  <td className="px-6 py-4"></td>
+                  <td className="px-6 py-4">
+                    <input
+                      type="text"
+                      className="w-full px-3 py-1.5 border rounded-lg text-sm"
+                      value={editData.name}
+                      onChange={e => setEditData({...editData, name: e.target.value})}
+                    />
+                  </td>
+                  <td className="px-6 py-4">
+                    <select
+                      className="w-full px-3 py-1.5 border rounded-lg text-sm"
+                      value={editData.type}
+                      onChange={e => setEditData({...editData, type: e.target.value})}
+                    >
+                      <option value="SCALE_1_4">ระดับ 1-4</option>
+                      <option value="YES_NO">ผ่าน/ไม่ผ่าน</option>
+                    </select>
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    <input
+                      type="number"
+                      className="w-20 px-3 py-1.5 border rounded-lg text-sm text-center font-bold"
+                      value={editData.weight}
+                      onChange={e => setEditData({...editData, weight: e.target.value})}
+                    />
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    <select
+                      className="w-full px-3 py-1.5 border rounded-lg text-sm"
+                      value={editData.requireEvidence}
+                      onChange={e => setEditData({...editData, requireEvidence: e.target.value === 'true'})}
+                    >
+                      <option value="false">ไม่ต้องการ</option>
+                      <option value="true">ต้องการ</option>
+                    </select>
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex gap-1 justify-end">
+                      <button onClick={handleUpdate} className="p-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all"><Check size={16}/></button>
+                      <button onClick={handleCancelEdit} className="p-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition-all"><X size={16}/></button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            }
+
+            return (
+              <tr key={ind.id} className="hover:bg-gray-50/50 transition-colors">
+                <td className="px-6 py-4 font-mono text-gray-400">{idx + 1}</td>
+                <td className="px-6 py-4 font-bold text-gray-900">{ind.name}</td>
+                <td className="px-6 py-4">
+                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase ${
+                    ind.type === 'SCALE_1_4' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'
+                  }`}>
+                    {ind.type === 'SCALE_1_4' ? <><Scale size={12}/> ระดับ 1-4</> : <><CheckCircle2 size={12}/> ผ่าน/ไม่ผ่าน</>}
+                  </span>
+                </td>
+                <td className="px-6 py-4 text-center font-black text-primary">{ind.weight}%</td>
+                <td className="px-6 py-4 text-center">
+                  <span className={`inline-flex items-center gap-1.5 text-xs font-bold ${ind.requireEvidence ? 'text-amber-600' : 'text-gray-300'}`}>
+                    <FileText size={14} /> {ind.requireEvidence ? 'ต้องการ' : 'ไม่ต้องการ'}
+                  </span>
+                </td>
+                <td className="px-6 py-4 text-right">
+                  <div className="flex items-center gap-2 justify-end">
+                    <button onClick={() => handleEdit(ind)} className="text-gray-400 hover:text-primary p-1.5"><Edit size={18}/></button>
+                    <button onClick={() => handleDelete(ind.id)} className="text-gray-300 hover:text-red-600 p-1.5"><Trash2 size={18}/></button>
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
           
           {/* Inline Add Form */}
           {isAdding ? (
