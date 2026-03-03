@@ -355,9 +355,22 @@ const getAssignments = async (req, res) => {
       include: {
         evaluator: { select: { name: true, email: true } },
         evaluatee: { select: { name: true, email: true } },
+        // include results so we can determine status without additional queries
+        results: {
+          select: { id: true },
+        },
       },
     });
-    res.json(assignments);
+
+    // derive a simple flag indicating whether any evaluation result exists
+    const formatted = assignments.map(a => ({
+      ...a,
+      isEvaluated: Array.isArray(a.results) && a.results.length > 0,
+    }));
+
+    // strip the results array from response if we don't need it on client
+    const payload = formatted.map(({ results, ...rest }) => rest);
+    res.json(payload);
   } catch (error) {
     console.error('Error fetching assignments:', error);
     res.status(500).json({ message: 'Internal server error' });

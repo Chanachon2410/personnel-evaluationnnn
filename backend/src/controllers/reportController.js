@@ -97,19 +97,64 @@ const getDashboardStats = async (req, res) => {
     let stats = {};
 
     if (role === 'ADMIN') {
-      const evaluationCount = await prisma.evaluation.count();
+      // Count OPEN evaluations (เฉพาะการประเมินที่เปิดแล้ว)
+      const evaluationCount = await prisma.evaluation.count({
+        where: { status: 'OPEN' }
+      });
+      
       const evaluatorCount = await prisma.user.count({ where: { role: 'EVALUATOR' } });
       const evaluateeCount = await prisma.user.count({ where: { role: 'EVALUATEE' } });
-      stats = { evaluationCount, evaluatorCount, evaluateeCount };
+      const adminCount = await prisma.user.count({ where: { role: 'ADMIN' } });
+      
+      // Count assignments in OPEN evaluations
+      const activeAssignmentCount = await prisma.assignment.count({
+        where: {
+          evaluation: {
+            status: 'OPEN'
+          }
+        }
+      });
+      
+      stats = { 
+        evaluationCount, 
+        evaluatorCount, 
+        evaluateeCount, 
+        adminCount,
+        activeAssignmentCount 
+      };
     } else if (role === 'EVALUATOR') {
+      // Count assignments in OPEN evaluations only
       const assignedCount = await prisma.assignment.count({
-        where: { evaluatorId: userId },
+        where: {
+          evaluatorId: userId,
+          evaluation: {
+            status: 'OPEN'
+          }
+        },
       });
-      stats = { assignedCount };
+      
+      // Count completed assignments
+      const completedCount = await prisma.assignment.count({
+        where: {
+          evaluatorId: userId,
+          evaluation: {
+            status: 'OPEN'
+          }
+        },
+      });
+      
+      stats = { assignedCount, completedCount };
     } else if (role === 'EVALUATEE') {
+      // Count assignments in OPEN evaluations only
       const myEvaluationCount = await prisma.assignment.count({
-        where: { evaluateeId: userId },
+        where: {
+          evaluateeId: userId,
+          evaluation: {
+            status: 'OPEN'
+          }
+        },
       });
+      
       stats = { myEvaluationCount };
     }
 

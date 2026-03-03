@@ -11,7 +11,7 @@ const EvaluationForm = () => {
   const { id } = useParams(); // Assignment ID
   const navigate = useNavigate();
   const [assignment, setAssignment] = useState(null);
-  const [scores, setFormData] = useState({}); // { indicatorId: score }
+  const [scores, setScores] = useState({}); // { indicatorId: score }
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const EvaluationForm = () => {
             }
           });
         });
-        setFormData(initialScores);
+        setScores(initialScores);
       } catch (error) {
         console.error(error);
         Swal.fire('ผิดพลาด', 'ไม่สามารถโหลดแบบประเมินได้', 'error');
@@ -41,7 +41,7 @@ const EvaluationForm = () => {
   }, [id]);
 
   const handleScoreChange = (indicatorId, value) => {
-    setFormData(prev => ({ ...prev, [indicatorId]: parseInt(value) }));
+    setScores(prev => ({ ...prev, [indicatorId]: parseInt(value) }));
   };
 
   const handleSave = async () => {
@@ -137,7 +137,7 @@ const EvaluationForm = () => {
                           {canScore ? (
                             <select 
                               className="w-full px-3 py-2 border rounded-xl text-sm font-bold text-gray-700 focus:ring-2 focus:ring-primary/20 outline-none"
-                              value={scores[ind.id] || ''}
+                              value={scores[ind.id] ?? ''}
                               onChange={(e) => handleScoreChange(ind.id, e.target.value)}
                             >
                               <option value="">-- ให้คะแนน --</option>

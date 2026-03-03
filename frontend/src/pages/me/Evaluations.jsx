@@ -1,18 +1,23 @@
 import { useState, useEffect } from 'react';
 import api from '../../services/api';
 import { BarChart3, ChevronRight, FileText, Upload, CheckCircle2, Clock } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 const EvaluateeEvaluations = () => {
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+ useEffect(() => {
     const fetchEvaluations = async () => {
       try {
         const res = await api.get('/me/evaluations');
-        setAssignments(res.data);
+        // เพิ่มบรรทัดนี้เพื่อกรองเอาเฉพาะ status ที่เป็น 'OPEN'
+        const openAssignments = res.data.filter(
+          (assignment) => assignment.evaluation.status === 'OPEN'
+        );
+        // นำข้อมูลที่กรองแล้วไปเก็บใน state
+        setAssignments(openAssignments);
       } catch (error) {
         console.error(error);
       } finally {
@@ -104,9 +109,12 @@ const EvaluateeEvaluations = () => {
                   >
                     <Upload size={18} /> แนบหลักฐาน
                   </Link>
-                  <button className="btn-outline flex items-center justify-center gap-2">
+                  <Link
+                    to={`/me/evaluations/${assignment.id}/result`}
+                    className="btn-outline flex items-center justify-center gap-2"
+                  >
                     <BarChart3 size={18} /> ดูคะแนน
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>

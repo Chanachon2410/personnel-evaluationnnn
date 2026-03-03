@@ -66,6 +66,7 @@ const AdminEvaluationDetail = () => {
     }
   }, [selectedAssignmentId]);
 
+
   if (loading) return <div className="text-center py-20 animate-pulse font-bold text-gray-400">กำลังโหลด...</div>;
   if (error === 'NOT_FOUND') return <div className="text-center py-20 text-red-500 font-bold">ไม่พบข้อมูลการประเมิน</div>;
 

@@ -85,6 +85,11 @@ function App() {
                 <EvaluateeEvidenceUpload />
               </ProtectedRoute>
             } />
+            <Route path="/me/evaluations/:id/result" element={
+              <ProtectedRoute roles={['EVALUATEE', 'ADMIN', 'EVALUATOR']}>
+                <EvaluateeEvaluationResult />
+              </ProtectedRoute>
+            } />
           </Route>
 
           {/* Catch all */}

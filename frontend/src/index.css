@@ -11,9 +11,25 @@
   :root {
     --primary: #1e3a8a;
     --secondary: #b91c1c;
+    font-size: 17px;
   }
   body {
-    @apply bg-gray-50 text-gray-900 antialiased;
+    @apply bg-gray-50 text-gray-900 antialiased text-base;
+  }
+  h1 {
+    @apply text-3xl;
+  }
+  h2 {
+    @apply text-2xl;
+  }
+  h3 {
+    @apply text-xl;
+  }
+  h4, h5, h6 {
+    @apply text-lg;
+  }
+  p, span, div, label, input {
+    @apply text-base;
   }
 }
 

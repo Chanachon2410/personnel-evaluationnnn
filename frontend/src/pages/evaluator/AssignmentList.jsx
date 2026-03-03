@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { 
   User, ChevronLeft, CheckCircle2, PlayCircle, 
-  Calendar, BarChart3 
+  Calendar, BarChart3, Eye, FileText 
 } from 'lucide-react';
 
 const AssignmentList = () => {
@@ -101,12 +101,22 @@ const AssignmentList = () => {
                   </td>
                   <td className="px-6 py-6 text-center">
                     {progress.isCompleted ? (
-                      <Link 
-                        to={`/evaluator/assignments/${assignment.id}/result`}
-                        className="inline-flex items-center gap-1.5 text-green-600 font-black text-xs hover:underline decoration-2 underline-offset-4"
-                      >
-                        <CheckCircle2 size={16} /> ประเมินเสร็จสิ้น
-                      </Link>
+                      <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
+                        <button 
+                          onClick={() => navigate(`/evaluator/assignments/${assignment.id}`)}
+                          className="inline-flex items-center gap-1.5 text-blue-600 font-black text-xs hover:underline decoration-2 underline-offset-4 bg-blue-50 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-all"
+                          title="แก้ไขคะแนนการประเมิน"
+                        >
+                          <FileText size={14} /> แก้ไขคะแนน
+                        </button>
+                        <Link 
+                          to={`/evaluator/assignments/${assignment.id}/result`}
+                          className="inline-flex items-center gap-1.5 text-green-600 font-black text-xs hover:underline decoration-2 underline-offset-4 bg-green-50 px-3 py-1.5 rounded-lg hover:bg-green-100 transition-all"
+                          title="ดูคะแนนและผลการประเมินสรุป"
+                        >
+                          <BarChart3 size={14} /> ดูผลการประเมิน
+                        </Link>
+                      </div>
                     ) : (
                       <button 
                         onClick={() => navigate(`/evaluator/assignments/${assignment.id}`)}

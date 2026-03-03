@@ -4,7 +4,12 @@ const getAssignedEvaluations = async (req, res) => {
   try {
     const evaluatorId = req.user.userId;
     const assignments = await prisma.assignment.findMany({
-      where: { evaluatorId },
+      where: { 
+        evaluatorId,
+        evaluation: {
+          status: 'OPEN'
+        }
+      },
       select: {
         evaluation: {
           select: { id: true, name: true, startAt: true, endAt: true, status: true },

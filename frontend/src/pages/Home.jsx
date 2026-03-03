@@ -30,7 +30,7 @@ const Home = () => {
       color: 'bg-primary',
       cards: [
         { 
-          label: 'จำนวนการประเมินทั้งหมด', 
+          label: 'การประเมินที่เปิดแล้ว', 
           value: stats?.evaluationCount || 0, 
           path: '/admin/evaluations', 
           icon: <ClipboardList size={24} />,
@@ -56,10 +56,10 @@ const Home = () => {
           bgColor: 'bg-amber-50'
         },
         { 
-          label: 'จัดการผู้ใช้งาน', 
-          value: (stats?.evaluatorCount || 0) + (stats?.evaluateeCount || 0) + (stats?.adminCount || 1), 
-          path: '/admin/users', 
-          icon: <Users size={24} />,
+          label: 'การมอบหมายงานที่ใช้งาน', 
+          value: stats?.activeAssignmentCount || 0, 
+          path: '/admin/evaluations', 
+          icon: <BarChart3 size={24} />,
           color: 'text-purple-600',
           bgColor: 'bg-purple-50'
         },
