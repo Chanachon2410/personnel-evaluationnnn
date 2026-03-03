@@ -31,9 +31,13 @@ const upload = multer({
 router.use(authenticateToken);
 router.use(authorizeRole('EVALUATEE', 'ADMIN', 'EVALUATOR'));
 
-router.get('/evaluations', evaluateeController.getEvaluationsForMe);
+router.get('/evaluations', (req, res, next) => {
+  /* #swagger.tags = ['Evaluatee'] */
+  evaluateeController.getEvaluationsForMe(req, res, next);
+});
 
 router.post('/evaluations/:evaluationId/evidence', upload.single('file'), (req, res, next) => {
+  /* #swagger.tags = ['Evaluatee'] */
   if (req.fileError) {
     return res.status(415).json({ message: req.fileError });
   }

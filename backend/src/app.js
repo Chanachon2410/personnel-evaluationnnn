@@ -3,43 +3,11 @@ const cors = require('cors');
 const path = require('path');
 const dotenv = require('dotenv');
 
-const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const swaggerDocs = require('../swagger-output.json');
 
 dotenv.config();
 
-const swaggerOptions = {
-  swaggerDefinition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'Personnel Evaluation System API',
-      version: '1.0.0',
-      description: 'API for Personnel Evaluation System',
-    },
-    servers: [
-      {
-        url: 'http://localhost:5000',
-      },
-    ],
-    components: {
-      securitySchemes: {
-        bearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT',
-        },
-      },
-    },
-    security: [
-      {
-        bearerAuth: [],
-      },
-    ],
-  },
-  apis: ['./src/routes/*.js'],
-};
-
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
 const app = express();
 
 // Import Routes

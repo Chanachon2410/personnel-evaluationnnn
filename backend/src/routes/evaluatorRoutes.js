@@ -7,17 +7,29 @@ const router = express.Router();
 router.use(authenticateToken);
 router.use(authorizeRole('EVALUATOR', 'ADMIN'));
 
-// Matches Evaluations.jsx call: /api/evaluator/assigned-evaluations
-router.get('/assigned-evaluations', evaluatorController.getAssignedEvaluations);
+router.get('/assigned-evaluations', (req, res, next) => {
+  /* #swagger.tags = ['Evaluator'] */
+  evaluatorController.getAssignedEvaluations(req, res, next);
+});
 
-// Matches AssignmentList.jsx call: /api/evaluator/evaluations/:evaluationId
-router.get('/evaluations/:evaluationId', evaluatorController.getEvaluatorAssignments);
+router.get('/evaluations/:evaluationId', (req, res, next) => {
+  /* #swagger.tags = ['Evaluator'] */
+  evaluatorController.getEvaluatorAssignments(req, res, next);
+});
 
-// Matches EvaluationResult.jsx call: /api/evaluator/assignments/:id/results
-router.get('/assignments/:id/results', evaluatorController.getAssignmentResults);
+router.get('/assignments/:id/results', (req, res, next) => {
+  /* #swagger.tags = ['Evaluator'] */
+  evaluatorController.getAssignmentResults(req, res, next);
+});
 
-// Matches EvaluationForm.jsx calls
-router.get('/assignments/:id', evaluatorController.getAssignmentById);
-router.post('/assignments/:id/score', evaluatorController.submitScore);
+router.get('/assignments/:id', (req, res, next) => {
+  /* #swagger.tags = ['Evaluator'] */
+  evaluatorController.getAssignmentById(req, res, next);
+});
+
+router.post('/assignments/:id/score', (req, res, next) => {
+  /* #swagger.tags = ['Evaluator'] */
+  evaluatorController.submitScore(req, res, next);
+});
 
 module.exports = router;
