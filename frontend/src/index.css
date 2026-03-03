@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', 'Google Sans', 'Open Sans', ui-sans-serif, system-ui, sans-serif;
+  --color-primary: #1e3a8a;
+  --color-secondary: #b91c1c;
+}
+
+@layer base {
+  :root {
+    --primary: #1e3a8a;
+    --secondary: #b91c1c;
+  }
+  body {
+    @apply bg-gray-50 text-gray-900 antialiased;
+  }
+}
+
+/* ใน Tailwind v4 ใช้ @utility สำหรับสร้างคลาสที่ต้องการนำไป @apply ต่อ */
+@utility btn {
+  @apply px-4 py-2 rounded-lg font-semibold transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:pointer-events-none cursor-pointer inline-flex items-center justify-center;
+}
+
+@utility btn-primary {
+  @apply btn bg-primary text-white hover:bg-primary/90 shadow-sm;
+}
+
+@utility btn-secondary {
+  @apply btn bg-secondary text-white hover:bg-secondary/90 shadow-sm;
+}
+
+@utility btn-outline {
+  @apply btn border-2 border-primary text-primary hover:bg-primary hover:text-white;
+}
+
+@utility card {
+  @apply bg-white rounded-xl shadow-md border border-gray-100 p-6;
+}
