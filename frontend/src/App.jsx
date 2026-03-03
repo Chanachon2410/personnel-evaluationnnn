@@ -16,6 +16,7 @@ import EvaluatorEvaluationForm from './pages/evaluator/EvaluationForm';
 import EvaluatorEvaluationResult from './pages/evaluator/EvaluationResult';
 import EvaluateeEvaluations from './pages/me/Evaluations';
 import EvaluateeEvidenceUpload from './pages/me/EvidenceUpload';
+import EvaluateeEvaluationResult from './pages/me/EvaluationResult';
 
 function App() {
   return (

@@ -113,7 +113,11 @@ const getAssignmentById = async (req, res) => {
       },
     });
 
-    if (!assignment || (assignment.evaluatorId !== evaluatorId && req.user.role !== 'ADMIN')) {
+    if (!assignment || (
+      assignment.evaluatorId !== evaluatorId && 
+      assignment.evaluateeId !== req.user.userId && 
+      req.user.role !== 'ADMIN'
+    )) {
       return res.status(403).json({ message: 'Forbidden' });
     }
 
@@ -204,7 +208,11 @@ const getAssignmentResults = async (req, res) => {
       }
     });
 
-    if (!assignment || (assignment.evaluatorId !== evaluatorId && req.user.role !== 'ADMIN')) {
+    if (!assignment || (
+      assignment.evaluatorId !== evaluatorId && 
+      assignment.evaluateeId !== req.user.userId && 
+      req.user.role !== 'ADMIN'
+    )) {
       return res.status(403).json({ message: 'Forbidden' });
     }
 
