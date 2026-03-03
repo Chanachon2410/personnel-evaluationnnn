@@ -131,6 +131,8 @@ const AdminEvaluationDetail = () => {
 // --- Tab 1: Topics ---
 const TopicsTab = ({ evaluation, onRefresh }) => {
   const [newTopicName, setNewTopicName] = useState('');
+  const [editingTopicId, setEditingTopicId] = useState(null);
+  const [editingTopicName, setEditingTopicName] = useState('');
 
   const handleAddTopic = async () => {
     if (!newTopicName.trim()) return;
@@ -147,6 +149,37 @@ const TopicsTab = ({ evaluation, onRefresh }) => {
     } catch (error) {
       Swal.fire('ผิดพลาด', 'ไม่สามารถเพิ่มหัวข้อได้', 'error');
     }
+  };
+
+  const handleEditTopic = (topic) => {
+    setEditingTopicId(topic.id);
+    setEditingTopicName(topic.name);
+  };
+
+  const handleUpdateTopic = async () => {
+    if (!editingTopicName.trim()) {
+      return Swal.fire('เตือน', 'กรุณากรอกชื่อหัวข้อ', 'warning');
+    }
+
+    try {
+      await api.patch(`/admin/topics/${editingTopicId}`, { name: editingTopicName });
+      setEditingTopicId(null);
+      setEditingTopicName('');
+      onRefresh();
+      Swal.fire({
+        icon: 'success',
+        title: 'แก้ไขหัวข้อสำเร็จ',
+        showConfirmButton: false,
+        timer: 1500
+      });
+    } catch (error) {
+      Swal.fire('ผิดพลาด', error.response?.data?.message || 'ไม่สามารถแก้ไขหัวข้อได้', 'error');
+    }
+  };
+
+  const handleCancelEditTopic = () => {
+    setEditingTopicId(null);
+    setEditingTopicName('');
   };
 
   const handleDeleteTopic = async (topicId) => {
@@ -183,17 +216,42 @@ const TopicsTab = ({ evaluation, onRefresh }) => {
         <button onClick={handleAddTopic} className="btn-primary py-2.5 px-6">เพิ่มหัวข้อ</button>
       </div>
 
-      {evaluation?.topics.map((topic) => (
-        <div key={topic.id} className="card !p-0 overflow-hidden border-gray-200 shadow-sm">
-          <div className="bg-gray-800 text-white px-6 py-3 flex justify-between items-center">
-            <h3 className="font-black uppercase tracking-widest text-sm">{topic.name}</h3>
-            <button onClick={() => handleDeleteTopic(topic.id)} className="p-1.5 hover:bg-red-500 rounded-lg transition-all text-gray-400 hover:text-white">
-              <Trash2 size={16} />
-            </button>
+      {evaluation?.topics.map((topic) => {
+        if (editingTopicId === topic.id) {
+          return (
+            <div key={topic.id} className="card !p-0 overflow-hidden border-gray-200 shadow-sm">
+              <div className="bg-pink-100 px-6 py-4 flex justify-between items-center gap-2">
+                <input
+                  type="text"
+                  className="flex-1 px-3 py-2 border rounded-lg text-sm font-bold"
+                  value={editingTopicName}
+                  onChange={(e) => setEditingTopicName(e.target.value)}
+                />
+                <button onClick={handleUpdateTopic} className="p-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all"><Check size={16}/></button>
+                <button onClick={handleCancelEditTopic} className="p-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition-all"><X size={16}/></button>
+              </div>
+              <IndicatorTable topic={topic} onRefresh={onRefresh} evaluation={evaluation} />
+            </div>
+          );
+        }
+
+        return (
+          <div key={topic.id} className="card !p-0 overflow-hidden border-gray-200 shadow-sm">
+            <div className="bg-gray-800 text-white px-6 py-3 flex justify-between items-center">
+              <h3 className="font-black uppercase tracking-widest text-sm">{topic.name}</h3>
+              <div className="flex items-center gap-1.5">
+                <button onClick={() => handleEditTopic(topic)} className="p-1.5 hover:bg-blue-500 rounded-lg transition-all text-gray-400 hover:text-white" title="แก้ไข">
+                  <Edit size={16} />
+                </button>
+                <button onClick={() => handleDeleteTopic(topic.id)} className="p-1.5 hover:bg-red-500 rounded-lg transition-all text-gray-400 hover:text-white" title="ลบ">
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            </div>
+            <IndicatorTable topic={topic} onRefresh={onRefresh} evaluation={evaluation} />
           </div>
-          <IndicatorTable topic={topic} onRefresh={onRefresh} evaluation={evaluation} />
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };
