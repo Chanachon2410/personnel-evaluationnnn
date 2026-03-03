@@ -46,7 +46,22 @@ const EvaluationForm = () => {
 
   const handleSave = async () => {
     try {
-      const promises = Object.entries(scores).map(([indicatorId, score]) => 
+      // Create a copy of scores and auto-fill 0 for missing evidence
+      const finalScores = { ...scores };
+      
+      assignment?.evaluation.topics.forEach(topic => {
+        topic.indicators.forEach(indicator => {
+          const needsEvidence = indicator.requireEvidence;
+          const hasEvidence = !!indicator.evidence;
+          
+          // If evidence is required but not provided, set score to 0
+          if (needsEvidence && !hasEvidence) {
+            finalScores[indicator.id] = 0;
+          }
+        });
+      });
+
+      const promises = Object.entries(finalScores).map(([indicatorId, score]) => 
         api.post(`/evaluator/assignments/${id}/score`, { indicatorId, score })
       );
       await Promise.all(promises);
