@@ -90,7 +90,7 @@ const EvaluationForm = () => {
 
             <div className="card !p-0 overflow-hidden border-gray-200 shadow-sm">
               <table className="min-w-full table-fixed" style={{ minWidth: '900px' }}>
-                <thead className="bg-gray-50 border-b border-gray-100">
+                <thead className="bg-pink-50 border-b border-pink-100">
                   <tr className="text-[10px] font-black uppercase text-gray-400 tracking-widest">
                     <th className="px-6 py-4 text-left w-20">ลำดับ</th>
                     <th className="px-6 py-4 text-left">ชื่อตัวชี้วัด</th>
@@ -106,7 +106,7 @@ const EvaluationForm = () => {
                     const canScore = !needsEvidence || hasEvidence;
 
                     return (
-                      <tr key={ind.id} className="hover:bg-gray-50/50 transition-colors">
+                      <tr key={ind.id} className="hover:bg-pink-50/50 transition-colors">
                         <td className="px-6 py-5 font-mono text-gray-400">{idx + 1}</td>
                         <td className="px-6 py-5">
                           <div className="font-bold text-gray-900">{ind.name}</div>

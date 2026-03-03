@@ -119,7 +119,7 @@ const EvaluatorAssignmentResult = () => {
               <div className="card !p-0 overflow-hidden border-gray-200 shadow-sm">
                 <div className="overflow-x-auto">
                   <table className="min-w-full table-fixed">
-                    <thead className="bg-gray-50 text-[10px] font-black uppercase text-gray-400 border-b border-gray-100">
+                    <thead className="bg-pink-50 text-[10px] font-black uppercase text-pink-400 border-b border-pink-100">
                       <tr>
                         <th className="px-6 py-3 text-left w-12 print:w-10">ลำดับ</th>
                         <th className="px-6 py-3 text-left">ตัวชี้วัด</th>
@@ -136,7 +136,7 @@ const EvaluatorAssignmentResult = () => {
                         const max = ind.type === 'SCALE_1_4' ? 4 : 1;
                         const weighted = (score / max) * ind.weight;
                         return (
-                          <tr key={ind.id} className="hover:bg-gray-50/50 transition-colors">
+                          <tr key={ind.id} className="hover:bg-pink-50/50 transition-colors">
                             <td className="px-6 py-4 font-mono text-gray-400 print:py-2">{idx + 1}</td>
                             <td className="px-6 py-4 font-bold text-gray-900 print:py-2">{ind.name}</td>
                             <td className="px-6 py-4 print:py-2">
@@ -165,7 +165,7 @@ const EvaluatorAssignmentResult = () => {
       </div>
 
       {/* Footer Info */}
-      <div className="bg-gray-50 rounded-[2rem] p-8 flex flex-col md:flex-row items-center justify-between gap-6 border border-gray-100 print:p-4 print:mt-4 print:bg-transparent print:border-none">
+      <div className="bg-pink-50 rounded-[2rem] p-8 flex flex-col md:flex-row items-center justify-between gap-6 border border-pink-100 print:p-4 print:mt-4 print:bg-transparent print:border-none">
         <div className="flex items-center gap-4 text-gray-400 print:gap-2">
           <Target size={32} className="print:w-6 print:h-6" />
           <p className="text-xs font-bold leading-relaxed print:text-[8px]">

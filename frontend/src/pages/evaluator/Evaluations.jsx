@@ -38,7 +38,7 @@ const EvaluatorEvaluations = () => {
 
       <div className="card !p-0 overflow-hidden shadow-sm border-gray-200">
         <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+          <thead className="bg-pink-50">
             <tr>
               <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider w-20">ลำดับ</th>
               <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">ชื่อการประเมิน</th>
@@ -47,7 +47,7 @@ const EvaluatorEvaluations = () => {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {evaluations.map((evaluation, idx) => (
-              <tr key={evaluation.id} className="hover:bg-gray-50 transition-colors">
+              <tr key={evaluation.id} className="hover:bg-pink-50 transition-colors">
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-400">{idx + 1}</td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-bold text-gray-900">{evaluation.name}</div>

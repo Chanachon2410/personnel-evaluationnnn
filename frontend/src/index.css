@@ -3,18 +3,20 @@
 
 @theme {
   --font-sans: 'Inter', 'Google Sans', 'Open Sans', ui-sans-serif, system-ui, sans-serif;
-  --color-primary: #1e3a8a;
-  --color-secondary: #b91c1c;
+  /* My Little Pony pink palette for a formal yet playful look */
+  --color-primary: #d63384;     /* deep pink */
+  --color-secondary: #f472b6;   /* lighter pink */
 }
 
 @layer base {
   :root {
-    --primary: #1e3a8a;
-    --secondary: #b91c1c;
+    --primary: #d63384;
+    --secondary: #f472b6;
     font-size: 17px;
   }
   body {
-    @apply bg-gray-50 text-gray-900 antialiased text-base;
+    /* pale pink background keeps things light and professional */
+    @apply bg-pink-50 text-gray-900 antialiased text-base;
   }
   h1 {
     @apply text-3xl;
@@ -51,5 +53,29 @@
 }
 
 @utility card {
-  @apply bg-white rounded-xl shadow-md border border-gray-100 p-6;
+  /* white card with a soft pink border for a formal appearance */
+  @apply bg-white rounded-xl shadow-md border border-pink-200 p-6;
+}
+
+@layer utilities {
+  /* swap out greys for pinks globally */
+  .bg-gray-50 { @apply bg-pink-50; }
+  .bg-gray-100 { @apply bg-pink-100; }
+  .bg-gray-500 { @apply bg-pink-500; }
+  .text-gray-400 { @apply text-pink-400; }
+  .text-gray-700 { @apply text-pink-700; }
+  .border-gray-100 { @apply border-pink-100; }
+  .border-gray-200 { @apply border-pink-200; }
+  .hover\:bg-gray-50:hover { @apply bg-pink-50; }
+  .bg-gray-50\/50 { @apply bg-pink-50\/50; }
+  .bg-gray-500 { @apply bg-pink-500; }
+  .bg-gray-50\.\2f 50 { @apply bg-pink-50/50; }
+  /* additional overrides for gray text/borders and hover states */
+  .text-gray-900 { @apply text-pink-900; }
+  .text-gray-600 { @apply text-pink-600; }
+  .border-gray-300 { @apply border-pink-300; }
+  .placeholder-gray-500::placeholder { @apply text-pink-500; }
+  .hover\:bg-gray-100:hover { @apply bg-pink-100; }
+  .hover\:bg-gray-50/50:hover { @apply bg-pink-50/50; }
+  .bg-white { @apply bg-pink-50; }
 }

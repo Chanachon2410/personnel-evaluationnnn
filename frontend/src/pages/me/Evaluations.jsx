@@ -122,7 +122,7 @@ const EvaluateeEvaluations = () => {
         })}
 
         {assignments.length === 0 && (
-          <div className="text-center py-20 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+          <div className="text-center py-20 bg-pink-50 rounded-2xl border-2 border-dashed border-pink-200">
             <BarChart3 size={48} className="mx-auto text-gray-300 mb-4" />
             <p className="text-gray-500">คุณยังไม่มีรายการการประเมินในขณะนี้</p>
           </div>

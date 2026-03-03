@@ -58,7 +58,7 @@ const AssignmentList = () => {
       {/* Main Table */}
       <div className="card !p-0 overflow-hidden shadow-sm border-gray-200">
         <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+          <thead className="bg-pink-50">
             <tr className="uppercase text-[10px] font-black tracking-widest text-gray-400">
               <th className="px-6 py-4 text-left w-20">ลำดับ</th>
               <th className="px-6 py-4 text-left">ชื่อผู้รับการประเมิน</th>
@@ -72,7 +72,7 @@ const AssignmentList = () => {
               const percent = progress.totalIndicators > 0 ? (progress.scoredCount / progress.totalIndicators) * 100 : 0;
 
               return (
-                <tr key={assignment.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={assignment.id} className="hover:bg-pink-50 transition-colors">
                   <td className="px-6 py-6 text-sm font-bold text-gray-400 font-mono">{idx + 1}</td>
                   <td className="px-6 py-6">
                     <div className="flex items-center gap-3">
